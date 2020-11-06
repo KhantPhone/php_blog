@@ -18,7 +18,7 @@
           <div class="col-md-12">
             <div class="card">
               <div class="card-header">
-                <h3 class="card-title">Bordered Table</h3>
+                <h3 class="card-title">Create New User</h3>
               </div>
               <!-- /.card-header -->
               <div class="card-body">
@@ -33,35 +33,37 @@
                  
 
                  if (empty($_POST['search'])) {
-                  $stmt = $pdo->prepare("SELECT * FROM posts ORDER BY id DESC");
+                  $stmt = $pdo->prepare("SELECT * FROM users ORDER BY id DESC");
                   $stmt->execute();
                   $rawResult = $stmt->fetchAll();
                   $total_pages = ceil(count($rawResult) / $numofrecs);
 
                  
-                  $stmt = $pdo->prepare("SELECT * FROM posts  ORDER BY id DESC LIMIT $offset,$numofrecs ");
+                  $stmt = $pdo->prepare("SELECT * FROM users  ORDER BY id DESC LIMIT $offset,$numofrecs ");
                   $stmt->execute();
                   $result = $stmt->fetchAll();
                  }else{
                   $searchKey = $_POST['search'];
-                  $stmt = $pdo->prepare("SELECT * FROM posts WHERE title LIKE '%$searchKey%' ORDER BY id DESC");
+                  $stmt = $pdo->prepare("SELECT * FROM users WHERE title LIKE '%$searchKey%' ORDER BY id DESC");
                   $stmt->execute();
                   $rawResult = $stmt->fetchAll();                 
                   $total_pages = ceil(count($rawResult) / $numofrecs); 
 
-                  $stmt = $pdo->prepare("SELECT * FROM posts WHERE title LIKE '%$searchKey%' ORDER BY id DESC LIMIT $offset,$numofrecs ");
+                  $stmt = $pdo->prepare("SELECT * FROM users WHERE title LIKE '%$searchKey%' ORDER BY id DESC LIMIT $offset,$numofrecs ");
                   $stmt->execute();
                   $result = $stmt->fetchAll();
                  }
 
                  ?>
-                <a href="add.php" class="btn btn-success mb-3">New Blog Post</a>
+                <a href="add.php" class="btn btn-success mb-3">Create New User</a>
                 <table class="table table-bordered">
                   <thead>                  
                     <tr>
                       <th style="width: 10px">#</th>
-                      <th>Title</th>
-                      <th>Description</th>
+                      <th>Name</th>
+                      <th>Email</th>
+                      <th>Role</th>
+
                       <th style="width: 40px">Actions</th>
                     </tr>
                   </thead>
@@ -73,13 +75,16 @@
                           foreach ($result as $value) { ?>
                            <tr>
                       <td><?php echo $i; ?></td>
-                      <td><?php echo $value['title'];?></td>
+                      <td><?php echo $value['name'];?></td>
                       <td>
-                      <?php echo substr( $value['content'],0,50);?>
+                      <?php echo substr( $value['email'],0,50);?>
+                      </td>
+                      <td>
+                        <?php echo $value['role']?>
                       </td>
                       <td class="d-flex flex-row">
-                        <a href="edit.php?id=<?php echo $value['id'] ?>" class="btn btn-outline-warning mr-3">Edit</a>
-                        <a href="delete.php?id=<?php echo $value['id'] ?>" 
+                        <a href="userEdit.php?id=<?php echo $value['id'] ?>" class="btn btn-outline-warning mr-3">Edit</a>
+                        <a href="userDelete.php?id=<?php echo $value['id'] ?>" 
                           onClick = "return confirm('Are u sure to delete this item ?')"
                           class="btn btn-outline-danger">Delete</a>
                       </td>
