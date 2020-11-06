@@ -13,6 +13,20 @@
   $stmtcm->execute();
   $resultcm = $stmtcm->fetchAll();
 
+  $blog_id = $_GET['id'];
+  $stmtall = $pdo->prepare("SELECT * FROM comments INNER JOIN users on comments.author_id = users.id WHERE post_id = $blog_id ORDER BY comments.created_at DESC"); 
+  $stmtall->execute();
+  $resultall = $stmtall->fetchAll();
+ 
+
+
+
+  $blog_id = $_GET['id'];
+  $stmtcount = $pdo->prepare("SELECT content FROM comments WHERE post_id = $blog_id"); 
+  $stmtcount->execute();
+  $resultcount = $stmtcount->fetchAll();
+  
+
   $author_id = $_SESSION['user_id'];
   $stmtau = $pdo->prepare("SELECT * FROM users WHERE id= $author_id"); 
   $stmtau->execute();
@@ -91,33 +105,33 @@
                <a href="index.php" class="btn btn-outline-danger mt-2">Go Back</a> 
                 
                 
-                <span class="float-right text-muted">127 likes - 3 comments</span>
+                <span class="float-right text-muted font-weight-bold"><?php echo count($resultcount) ?> comments</span>
               </div>
               <!-- /.card-body -->
-              <div class="card-footer card-comments">
-                <div class="card-comment">
-                  <!-- User image -->
-                 
-
-                  <div class="comment-tex t ml-auto">
-                    <span class="username">
-                      <?php 
-                           echo $resultau[0]['name'];
-                       ?>
-                      <span class="text-muted float-right">
-                        <?php 
-                           echo $resultcm[0]['created_at'];
-                         ?>
-                      </span>
-                    </span><!-- /.username -->
-                        <?php 
-                           echo $resultcm[0]['content'];
-                         ?>
+              <?php 
+                if ($resultcm) {
+                  foreach ($resultall as $value) {
+                    # code...
+                  
+                  ?>
+                  <div class="row ml-3">
+                    <div class="footer">
+                  <p class="font-weight-bold text-uppercase">
+                    <?php echo $value['name']; ?><span class="text-muted">
+                      (<?php echo date('Y-M-D',strtotime($value['created_at'])); ?>)
+                    </span>
+                  </p>               
+                  <p class="text-muted">
+                   <?php 
+                      echo $value['content'];
+                    ?>
+                  </p>
+                    </div>
                   </div>
-                  <!-- /.comment-text -->
-                </div>
-                
-              </div>
+              <?php
+                } }
+               ?>
+              
               <!-- /.card-footer -->
               <div class="card-footer">
                 <form action="" method="post">

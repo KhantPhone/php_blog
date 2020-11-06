@@ -79,7 +79,9 @@
                   <img class="img-fluid" src="admin/images/<?php echo $value['image']; ?>" alt="Photo" style= "height: 45vh;">
                 </a>
 
-                <p>I took this photo this morning. What do you guys think?</p>
+                <p><?php 
+                    echo substr($value['content'],0,50);
+                 ?></p>
                 
                 <span class="float-right text-muted">127 likes - 3 comments</span>
               </div>

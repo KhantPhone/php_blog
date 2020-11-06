@@ -4,7 +4,12 @@
   if (empty($_SESSION['user_id']) && empty($_SESSION['logged_in'])) {
     header('Location:login.php');
   }
+  if ($_SESSION['role'] == 1) {
+   
+    header('Location:login.php');
+  }
 
+  
  ?>
  <?php 
      require_once 'header.php';
@@ -18,7 +23,7 @@
           <div class="col-md-12">
             <div class="card">
               <div class="card-header">
-                <h3 class="card-title">Create New User</h3>
+                <h3 class="card-title text-uppercase font-weight-bold">Users Listing</h3>
               </div>
               <!-- /.card-header -->
               <div class="card-body">
@@ -32,7 +37,7 @@
                   $offset = ($pageno -1 ) * $numofrecs ;
                  
 
-                 if (empty($_POST['search'])) {
+                 if (empty($_POST['search']) ) {
                   $stmt = $pdo->prepare("SELECT * FROM users ORDER BY id DESC");
                   $stmt->execute();
                   $rawResult = $stmt->fetchAll();
@@ -43,19 +48,19 @@
                   $stmt->execute();
                   $result = $stmt->fetchAll();
                  }else{
-                  $searchKey = $_POST['search'];
-                  $stmt = $pdo->prepare("SELECT * FROM users WHERE title LIKE '%$searchKey%' ORDER BY id DESC");
+                  $searchKey = $_POST['search'] ;
+                  $stmt = $pdo->prepare("SELECT * FROM users WHERE name LIKE '%$searchKey%' ORDER BY id DESC");
                   $stmt->execute();
                   $rawResult = $stmt->fetchAll();                 
                   $total_pages = ceil(count($rawResult) / $numofrecs); 
 
-                  $stmt = $pdo->prepare("SELECT * FROM users WHERE title LIKE '%$searchKey%' ORDER BY id DESC LIMIT $offset,$numofrecs ");
+                  $stmt = $pdo->prepare("SELECT * FROM users WHERE name LIKE '%$searchKey%' ORDER BY id DESC LIMIT $offset,$numofrecs ");
                   $stmt->execute();
                   $result = $stmt->fetchAll();
                  }
 
                  ?>
-                <a href="add.php" class="btn btn-success mb-3">Create New User</a>
+                <a href="userAdd.php" class="btn btn-success mb-3">Create New User</a>
                 <table class="table table-bordered">
                   <thead>                  
                     <tr>
@@ -71,6 +76,7 @@
                     <?php 
 
                         if ($result) {
+                          
                           $i = 1;
                           foreach ($result as $value) { ?>
                            <tr>
@@ -80,7 +86,7 @@
                       <?php echo substr( $value['email'],0,50);?>
                       </td>
                       <td>
-                        <?php echo $value['role']?>
+                        <?php echo $value['role']==1 ?'admin' :'user'?>
                       </td>
                       <td class="d-flex flex-row">
                         <a href="userEdit.php?id=<?php echo $value['id'] ?>" class="btn btn-outline-warning mr-3">Edit</a>

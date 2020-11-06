@@ -4,14 +4,41 @@
   if (empty($_SESSION['user_id']) && empty($_SESSION['logged_in'])) {
     header('Location:login.php');
   }
+  if ($_SESSION['role'] == 1) {
+   
+    header('Location:login.php');
+  }
   if ($_POST) {
     $id = $_POST['id'];
     $name = $_POST['name'];
     $email = $_POST['email'];
-    $stmt = $pdo->prepare("UPDATE posts SET name= '$name' , email= '$email'   WHERE id = '$id' ");
-    $result = $stmt->execute();
-    if ($result) {
-      echo "<script>alert('Successfully Updated');window.location.href='index.php';</script>";
+  
+    if (empty($_POST['role'])) {
+        $role = 0;
+    }else{
+       $role= 1;
+    }
+
+      $stmt = $pdo->prepare("SELECT * FROM users WHERE email=:email AND id!=:id");
+     
+      $stmt->execute(
+                    array(':email'=>$email,':id'=>$id)
+      );
+      $user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+      if ($user)  {
+        echo "<script>alert('User email has already existed.')</script>";
+      }
+      else{
+
+      $stmt = $pdo->prepare("UPDATE  users SET name= '$name' , email = '$email' , role ='$role' WHERE id = '$id'");
+      $result = $stmt->execute();
+
+      
+      if ($result) {
+        echo "<script>alert('Successfully Updated');window.location.href='users.php';</script>";
+
+      }
       }
 
   
