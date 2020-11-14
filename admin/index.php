@@ -1,6 +1,7 @@
 <?php 
   require_once '../config/config.php';
-  session_start();
+  require_once '../config/common.php';
+ 
   if (empty($_SESSION['user_id']) && empty($_SESSION['logged_in'])) {
     header('Location:login.php');
   }
@@ -77,9 +78,9 @@
                           foreach ($result as $value) { ?>
                            <tr>
                       <td><?php echo $i; ?></td>
-                      <td><?php echo $value['title'];?></td>
+                      <td><?php echo escape($value['title'])?></td>
                       <td>
-                      <?php echo substr( $value['content'],0,50);?>
+                      <?php echo substr( escape($value['content']),0,50);?>
                       </td>
                       <td class="d-flex flex-row">
                         <a href="edit.php?id=<?php echo $value['id'] ?>" class="btn btn-outline-warning mr-3">Edit</a>

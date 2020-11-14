@@ -93,7 +93,7 @@
                     <input type="hidden" name="_token" value="<?php echo $_SESSION['_token'] ?>">
                     <input type="hidden" name="id" value="<?php echo $result[0]['id'] ?>">
                      <label for="name">Name</label>
-                     <input type="text" class="form-control " name="name" id="name" value="<?php echo $result[0]['name']; ?>">
+                     <input type="text" class="form-control " name="name" id="name" value="<?php echo escape($result[0]['content']) ?>">
                      <p class="text-danger mt-3 font-weight-bold"><?php echo empty($nameError) ? '' : $nameError; ?></p>
                   </div>
                   <div class="form-group">
