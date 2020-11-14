@@ -9,7 +9,18 @@
     header('Location:login.php');
   }
   if ($_POST) {
-    $id = $_POST['id'];
+     if (empty($_POST['title']) || empty($_POST['content']) ) {
+        if (empty($_POST['title'])) {
+          $titleError = 'Title cannot be empty !';
+        }
+        if (empty($_POST['content'])) {
+          $contentError = 'Content cannot be empty !';
+        }
+        if (empty($_FILES['image'])) {
+          $imageError = 'Image cannot be empty !';
+        }
+    }else{
+       $id = $_POST['id'];
     $title = $_POST['title'];
     $content = $_POST['content'];
 
@@ -44,6 +55,8 @@
 
   }
 
+    }
+   
   } 
 
   $stmt = $pdo->prepare("SELECT * FROM posts WHERE id = ".$_GET['id']);
@@ -69,12 +82,14 @@
                     <input type="hidden" name="id" value="<?php echo $result[0]['id'] ?>">
                      <label for="title">Title</label>
                      <input type="text" class="form-control " name="title" id="title" value="<?php echo $result[0]['title']; ?>">
+                      <p class="text-danger mt-3 font-weight-bold"><?php echo empty($titleError) ? '' : $titleError; ?></p>
                   </div>
                   <div class="form-group">
                      <label for="content">Content</label>
                      <textarea name="content" id="content" class="form-control" cols="30" rows="10">
                        <?php echo $result[0]['content']?>
                      </textarea>
+                      <p class="text-danger mt-3 font-weight-bold"><?php echo empty($contentError) ? '' : $contentError; ?></p>
                   </div>
                   <div class="form-group">
                      <div class="row ml-auto">
@@ -84,6 +99,7 @@
                        <img src="images/<?php echo $result[0]['image'] ?>" alt="" style="width:100%; height:50vh;">
                      </div>
                      <input type="file" name="image" id="file" >
+                      <p class="text-danger mt-3 font-weight-bold"><?php echo empty($imageError) ? '' : $imageError; ?></p>
                   </div>
                   <div class="form-group d-flex justify-content-end">
                     <input type="submit" value="SUBMIT" class="btn btn-success mr-3">

@@ -9,7 +9,21 @@
     header('Location:login.php');
   }
   if ($_POST) {
-      
+      if (empty($_POST['name']) || empty($_POST['email']) || empty($_POST['password']) || strlen($_POST['password']) < 4  ) {
+        if (empty($_POST['name'])) {
+          $nameError = 'Name cannot be empty !';
+        }
+        if (empty($_POST['email'])) {
+          $emailError = 'Email cannot be empty !';
+        }
+        if (empty($_POST['password'])) {
+          $passwordError = 'Password cannot be empty !';
+        }
+        if (strlen($_POST['password'] ) < 4  ) {
+          $passwordError = 'Password must be at least 5 chararcter ! ';
+        }
+              }
+      else{
       $name = $_POST['name'];
       $email = $_POST['email'];
       $password = $_POST['password'];
@@ -39,6 +53,8 @@
       }
       }
 
+       }
+       
   
   }
  ?>
@@ -57,14 +73,18 @@
                 <form action="" method="post" >
                   <div class="form-group">
                      <label for="name">name</label>
-                     <input type="text" class="form-control " name="name" id="name" required>
+                     <input type="text" class="form-control " name="name" id="name" >
+                      <p class="text-danger mt-3 font-weight-bold"><?php echo empty($nameError) ? '' : $nameError; ?></p>
                   </div>
                   <div class="form-group">
                      <label for="email">Email</label>
                      <input type = "email" name="email" id="email" class="form-control" cols="10" rows="10"></input>
-                  </div><div class="form-group">
+                      <p class="text-danger mt-3 font-weight-bold"><?php echo empty($emailError) ? '' : $emailError; ?></p>
+                  </div>
+                  <div class="form-group">
                      <label for="password">Password</label>
                      <input type = "password" name="password" id="password" class="form-control" cols="10" rows="10"></input>
+                      <p class="text-danger mt-3 font-weight-bold"><?php echo empty($passwordError) ? '' : $passwordError; ?></p>
                   </div>
 
                   <input type="checkbox" name="role">

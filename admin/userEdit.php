@@ -9,38 +9,62 @@
     header('Location:login.php');
   }
   if ($_POST) {
-    $id = $_POST['id'];
-    $name = $_POST['name'];
-    $email = $_POST['email'];
-  
-    if (empty($_POST['role'])) {
-        $role = 0;
-    }else{
-       $role= 1;
-    }
+     if (empty($_POST['name']) || empty($_POST['email']) ) {
+        if (empty($_POST['name'])) {
+          $nameError = 'Name cannot be empty !';
+        }
+        if (empty($_POST['email'])) {
+          $emailError = 'Email cannot be empty !';
+        }   
+             }
+          elseif (strlen($_POST['password'] ) < 4 && !empty($_POST['password'])){
+          $passwordError = 'Password must be at least 4
 
-      $stmt = $pdo->prepare("SELECT * FROM users WHERE email=:email AND id!=:id");
-     
-      $stmt->execute(
-                    array(':email'=>$email,':id'=>$id)
-      );
-      $user = $stmt->fetch(PDO::FETCH_ASSOC);
+           chararcter ! ';
+        }
 
-      if ($user)  {
-        echo "<script>alert('User email has already existed.')</script>";
+        else{
+          $id = $_POST['id'];
+          $name = $_POST['name'];
+          $email = $_POST['email'];
+          $password = $_POST['password'];
+        
+          if (empty($_POST['role'])) {
+              $role = 0;
+          }else{
+             $role= 1;
+          }
+
+            $stmt = $pdo->prepare("SELECT * FROM users WHERE email=:email AND id!=:id");
+           
+            $stmt->execute(
+                          array(':email'=>$email,':id'=>$id)
+            );
+            $user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            if ($user)  {
+              echo "<script>alert('User email has already existed.')</script>";
+            }
+            else{
+              if ($password != null) {
+               $stmt = $pdo->prepare("UPDATE  users SET name= '$name' , email = '$email' , password = $password , role ='$role' WHERE id = '$id'");        
+
+              }else{
+                 $stmt = $pdo->prepare("UPDATE  users SET name= '$name' , email = '$email' , role ='$role' WHERE id = '$id'");
+              }
+           
+            $result = $stmt->execute();
+
+            
+            if ($result) {
+              echo "<script>alert('Successfully Updated');window.location.href='users.php';</script>";
+
       }
-      else{
-
-      $stmt = $pdo->prepare("UPDATE  users SET name= '$name' , email = '$email' , role ='$role' WHERE id = '$id'");
-      $result = $stmt->execute();
-
-      
-      if ($result) {
-        echo "<script>alert('Successfully Updated');window.location.href='users.php';</script>";
-
-      }
       }
 
+
+        }
+    
   
 
   } 
@@ -68,13 +92,21 @@
                     <input type="hidden" name="id" value="<?php echo $result[0]['id'] ?>">
                      <label for="name">Name</label>
                      <input type="text" class="form-control " name="name" id="name" value="<?php echo $result[0]['name']; ?>">
+                     <p class="text-danger mt-3 font-weight-bold"><?php echo empty($nameError) ? '' : $nameError; ?></p>
                   </div>
                   <div class="form-group">
                      <label for="email">Email</label>
                      <input type="text" name="email" id="email" class="form-control" cols="30" rows="10" value="<?php echo $result[0]['email']?>">
+                     <p class="text-danger mt-3 font-weight-bold"><?php echo empty($emailError) ? '' : $emailError; ?></p>
                        
                      </input>
-                  </div><div class="form-group">
+                  </div>
+                  <div class="form-group">
+                     <label for="password">Password</label>
+                     <input type = "password" name="password" id="password" class="form-control" cols="10" rows="10"></input>
+                      <p class="text-danger mt-3 font-weight-bold"><?php echo empty($passwordError) ? '' : $passwordError; ?></p>
+                  </div>
+                  <div class="form-group">
                      <label for="role" class="d-block">Role</label>
                      <input type="checkbox" name="role" id="role">
                        

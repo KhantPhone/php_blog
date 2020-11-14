@@ -3,13 +3,31 @@
   require_once 'config/config.php';
 
   if ($_POST) {
-   $name = $_POST['name'];
-   $email = $_POST['email'];
-   $password = $_POST['password'];
-   $stmt = $pdo->prepare("SELECT * FROM users WHERE email=:email");
-   $stmt->bindValue(':email',$email);
-   $stmt->execute();
-   $user = $stmt->fetch(PDO::FETCH_ASSOC);
+       if (empty($_POST['name']) || empty($_POST['email']) || empty($_POST['password']) || strlen($_POST['password']) < 4  ) {
+        if (empty($_POST['name'])) {
+          $nameError = 'Name cannot be empty !';
+        }
+        if (empty($_POST['email'])) {
+          $emailError = 'Email cannot be empty !';
+        }
+        if (empty($_POST['password'])) {
+          $passwordError = 'Password cannot be empty !';
+        }
+        if (strlen($_POST['password'] ) < 4  ) {
+          $passwordError = 'Password must be at least 5 chararcter ! ';
+        }
+              }
+        else{  
+
+           $name = $_POST['name'];
+           $email = $_POST['email'];
+           $password = $_POST['password'];
+
+           $stmt = $pdo->prepare("SELECT * FROM users WHERE email=:email");
+           $stmt->bindValue(':email',$email);
+           $stmt->execute();
+           $user = $stmt->fetch(PDO::FETCH_ASSOC);
+           
 
    if ($user) {
      echo "<script>alert('User email has already existed.')</script>";
@@ -24,9 +42,10 @@
 
       }
    }
-    
 
-  }
+              }
+
+   }
   
  ?>
  <!DOCTYPE html>
@@ -61,29 +80,33 @@
 
       <form action="register.php" method="post">
         <div class="input-group mb-3">
-          <input type="name" name="name" class="form-control" placeholder="Name">
+          <input type="name" name="name" class="form-control" placeholder="Name">          
           <div class="input-group-append">
             <div class="input-group-text">
               <span class="fa fa-users"></span>
             </div>
           </div>
         </div>
+        <p class="text-danger mt-3 font-weight-bold"><?php echo empty($nameError) ? '' : $nameError; ?></p>
         <div class="input-group mb-3">
-          <input type="email" name="email" class="form-control" placeholder="Email">
+          <input type="email" name="email" class="form-control" placeholder="Email">         
           <div class="input-group-append">
             <div class="input-group-text">
               <span class="fas fa-envelope"></span>
             </div>
           </div>
         </div>
+         <p class="text-danger mt-3 font-weight-bold"><?php echo empty($emailError) ? '' : $emailError; ?></p>
         <div class="input-group mb-3">
           <input type="password" name="password" class="form-control" placeholder="Password">
+          
           <div class="input-group-append">
             <div class="input-group-text">
               <span class="fas fa-lock"></span>
             </div>
           </div>
-        </div>
+        </div><p class="text-danger mt-3 font-weight-bold"><?php echo empty($passwordError) ? '' : $passwordError; ?></p>
+
         <div class="row">
           
           <!-- /.col -->

@@ -9,28 +9,41 @@
     header('Location:login.php');
   }
   if ($_POST) {
-      $file = 'images/'.($_FILES['image']['name']);
+      if (empty($_POST['title']) || empty($_POST['content']) || empty($_FILES['image'])) {
+        if (empty($_POST['title'])) {
+          $titleError = 'Title cannot be empty !';
+        }
+        if (empty($_POST['content'])) {
+          $contentError = 'Content cannot be empty !';
+        }
+        if (empty($_FILES['image'])) {
+          $imageError = 'Image cannot be empty !';
+        }
+              }
+      else{
+        $file = 'images/'.($_FILES['image']['name']);
       $imageType = pathinfo($file,PATHINFO_EXTENSION);
  
-  if ($imageType != 'png' && $imageType != 'jpg' && $imageType != 'jpeg') {
-      echo "<script>alert('Invalid Image Format')</script>";
-  }
-  else{
-      $title = $_POST['title'];
-      $content = $_POST['content'];
-      $image = $_FILES['image']['name'];
-      move_uploaded_file($_FILES['image']['tmp_name'], $file);
+        if ($imageType != 'png' && $imageType != 'jpg' && $imageType != 'jpeg') {
+            echo "<script>alert('Invalid Image Format')</script>";
+        }
+        else{
+            $title = $_POST['title'];
+            $content = $_POST['content'];
+            $image = $_FILES['image']['name'];
+            move_uploaded_file($_FILES['image']['tmp_name'], $file);
 
-      $stmt = $pdo->prepare("INSERT INTO posts(title,content,author_id,image) VALUES(:title,:content,:author_id,:image)");
-      $result = $stmt->execute(
-          array(':title' => $title , ':content' => $content , ':image' => $image , ':author_id'=> $_SESSION['user_id'])
-        );
-      if ($result) {
-        echo "<script>alert('Successfully Added');window.location.href='index.php';</script>";
+            $stmt = $pdo->prepare("INSERT INTO posts(title,content,author_id,image) VALUES(:title,:content,:author_id,:image)");
+            $result = $stmt->execute(
+                array(':title' => $title , ':content' => $content , ':image' => $image , ':author_id'=> $_SESSION['user_id'])
+              );
+            if ($result) {
+            echo "<script>alert('Successfully Added');window.location.href='index.php';</script>";
 
       }
 
   }
+      }
   }
  ?>
  <?php 
@@ -48,17 +61,22 @@
                 <form action="add.php" method="post" enctype="multipart/form-data">
                   <div class="form-group">
                      <label for="title">Title</label>
-                     <input type="text" class="form-control " name="title" id="title" required>
+                     <input type="text" class="form-control " name="title" id="title">
+                     <p class="text-danger mt-3 font-weight-bold"><?php echo empty($titleError) ? '' : $titleError; ?></p>
                   </div>
                   <div class="form-group">
                      <label for="content">Content</label>
                      <textarea name="content" id="content" class="form-control" cols="30" rows="10"></textarea>
+                     <p class="text-danger mt-3 font-weight-bold"><?php echo empty($contentError) ? '' : $contentError; ?>
+                       
+                     </p>
                   </div>
                   <div class="form-group">
                      <div class="row ml-auto">
                        <label for="file">Image</label>
                      </div>
-                     <input type="file" name="image" id="file" required>
+                     <input type="file" name="image" id="file">
+                     <p class="text-danger mt-3 font-weight-bold"><?php echo empty($imageError) ? '' : $imageError; ?></p>
                   </div>
                   <div class="form-group d-flex justify-content-end">
                     <input type="submit" value="SUBMIT" class="btn btn-success mr-3">
