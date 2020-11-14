@@ -61,6 +61,7 @@
 
                  ?>
                 <a href="add.php" class="btn btn-success mb-3">New Blog Post</a>
+                
                 <table class="table table-bordered">
                   <thead>                  
                     <tr>
