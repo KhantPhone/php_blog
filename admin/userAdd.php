@@ -1,6 +1,7 @@
 <?php 
   require_once '../config/config.php';
-  session_start();
+  require_once '../config/common.php';
+  
   if (empty($_SESSION['user_id']) && empty($_SESSION['logged_in'])) {
     header('Location:login.php');
   }
@@ -76,7 +77,8 @@
                      <input type="text" class="form-control " name="name" id="name" >
                       <p class="text-danger mt-3 font-weight-bold"><?php echo empty($nameError) ? '' : $nameError; ?></p>
                   </div>
-                  <div class="form-group">
+                  <div class="form-group">                  
+                    <input type="hidden" name="_token" value="<?php echo $_SESSION['_token'] ?>">
                      <label for="email">Email</label>
                      <input type = "email" name="email" id="email" class="form-control" cols="10" rows="10"></input>
                       <p class="text-danger mt-3 font-weight-bold"><?php echo empty($emailError) ? '' : $emailError; ?></p>

@@ -1,6 +1,6 @@
  <?php 
-	session_start();
 	require_once '../config/config.php';
+  require_once '../config/common.php';
 
 	if ($_POST) {
 		$email = $_POST['email'];
@@ -55,8 +55,8 @@
   <!-- /.login-logo -->
   <div class="card">
     <div class="card-body login-card-body">
-      <p class="login-box-msg">Sign in to start your session</p>
-
+      <p class="login-box-msg">Sign in to start your session</p>      
+      <input type="hidden" name="_token" value="<?php echo $_SESSION['_token'] ?>">
       <form action="login.php" method="post">
         <div class="input-group mb-3">
           <input type="email" name="email" class="form-control" placeholder="Email">

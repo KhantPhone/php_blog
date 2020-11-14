@@ -1,6 +1,7 @@
 <?php 
   require_once '../config/config.php';
-  session_start();
+  require_once '../config/common.php';
+ 
   if (empty($_SESSION['user_id']) && empty($_SESSION['logged_in'])) {
     header('Location:login.php');
   }
@@ -60,8 +61,10 @@
               <div class="card-body">
                 <form action="add.php" method="post" enctype="multipart/form-data">
                   <div class="form-group">
+                    <input type="hidden" name="_token" value="<?php echo $_SESSION['_token'] ?>">
                      <label for="title">Title</label>
                      <input type="text" class="form-control " name="title" id="title">
+
                      <p class="text-danger mt-3 font-weight-bold"><?php echo empty($titleError) ? '' : $titleError; ?></p>
                   </div>
                   <div class="form-group">
